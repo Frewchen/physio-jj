@@ -1,0 +1,356 @@
+---
+import { Image } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import logo from "../assets/logo.png";
+import Footer from "../components/Footer.astro";
+import Email from "../components/Email.astro";
+import { praxis, leistungen } from "../data/praxis";
+
+const routeUrl = `https://www.openstreetmap.org/?mlat=${praxis.geo.lat}&mlon=${praxis.geo.lng}#map=17/${praxis.geo.lat}/${praxis.geo.lng}`;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Physiotherapy",
+  name: praxis.name,
+  url: "https://physiotherapie-jasinski.de",
+  telephone: "+49 40 32081471",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: praxis.strasse,
+    postalCode: praxis.plz,
+    addressLocality: praxis.ort,
+    addressCountry: "DE",
+  },
+  geo: { "@type": "GeoCoordinates", latitude: praxis.geo.lat, longitude: praxis.geo.lng },
+};
+---
+
+<Base
+  title="Physiotherapie Jeannette Jasinski – Hamburg"
+  description="Physiotherapie, Manuelle Therapie, Lymphdrainage, Hausbesuche und mentales GesundheitsCoaching in Hamburg. Unsere neue Website entsteht – telefonisch sind wir wie gewohnt für Sie da."
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <div class="deko" aria-hidden="true">
+    <span class="sonne"></span>
+  </div>
+
+  <main class="seite">
+    <header class="kopf">
+      <Image src={logo} alt="Physiotherapie Jeannette Jasinski" width={360} class="logo" loading="eager" />
+      <p class="status"><span class="punkt" aria-hidden="true"></span>Neue Website im Aufbau</p>
+    </header>
+
+    <section class="hero">
+      <p class="eyebrow">Physiotherapie in Hamburg</p>
+      <h1>Wenn Bewegung wieder <em>Spaß&nbsp;macht.</em></h1>
+      <p class="lead">
+        Hier entsteht gerade unsere neue Website. Für Termine, Hausbesuche und Fragen sind wir
+        wie gewohnt persönlich für Sie da – rufen Sie einfach an.
+      </p>
+      <div class="aktionen">
+        <a class="btn btn-primaer" href={praxis.telefon.href}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" /></svg>
+          {praxis.telefon.anzeige}
+        </a>
+        <a class="btn btn-sekundaer" href={praxis.mobil.href}>Mobil: {praxis.mobil.anzeige}</a>
+      </div>
+    </section>
+
+    <section class="kontakt" aria-label="Kontakt">
+      <a class="karte" href={praxis.telefon.href}>
+        <span class="label">Praxis</span>
+        <span class="wert">{praxis.telefon.anzeige}</span>
+      </a>
+      <a class="karte" href={praxis.mobil.href}>
+        <span class="label">Mobil</span>
+        <span class="wert">{praxis.mobil.anzeige}</span>
+      </a>
+      <div class="karte karte-email">
+        <span class="label">E-Mail</span>
+        <span class="wert"><Email /></span>
+      </div>
+      <a class="karte" href={routeUrl} target="_blank" rel="noopener">
+        <span class="label">Adresse</span>
+        <span class="wert">{praxis.strasse}<br />{praxis.plz} {praxis.ort}</span>
+      </a>
+    </section>
+
+    <section class="ueber">
+      <div>
+        <p class="eyebrow">Über mich</p>
+        <h2>Ganzheitlich für Körper <em>und</em> Kopf</h2>
+      </div>
+      <div class="ueber-text">
+        <p>
+          Ich bin Jeannette, staatlich anerkannte Physiotherapeutin in Hamburg. Seit 2015 begleite
+          ich Menschen rund um Bewegung, Krankengymnastik, Massage und das gesamte Spektrum des
+          Bewegungsapparates.
+        </p>
+        <p>
+          Als ausgebildeter Mentaler GesundheitsCoach (seit 2019) beziehe ich auch innere
+          Blockaden mit ein, die Genesung und Heilung im Weg stehen können – damit Sie
+          Wohlbefinden und Lebensqualität nachhaltig zurückgewinnen.
+        </p>
+      </div>
+    </section>
+
+    <section class="leistungen">
+      <p class="eyebrow">Leistungen</p>
+      <ul>
+        {leistungen.map((l) => <li>{l}</li>)}
+      </ul>
+    </section>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  /* ── Dekorativer Hintergrund (Anlehnung an die rote Sonne im Logo) ── */
+  .deko {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .sonne {
+    position: absolute;
+    width: min(70vw, 760px);
+    aspect-ratio: 1;
+    right: max(-22vw, -260px);
+    top: -14vw;
+    border-radius: 50%;
+    background:
+      repeating-linear-gradient(-28deg, transparent 0 46px, rgb(255 255 255 / 0.55) 46px 52px),
+      radial-gradient(circle at 35% 35%, #e8343a, var(--red) 60%, var(--red-dark));
+    opacity: 0.11;
+    animation: schweben 14s ease-in-out infinite alternate;
+  }
+  @keyframes schweben {
+    to {
+      transform: translate(-2vw, 3vw) rotate(6deg);
+    }
+  }
+
+  .seite {
+    position: relative;
+    z-index: 1;
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: clamp(1.5rem, 4vw, 3rem) 16px 3rem;
+  }
+
+  /* ── Kopf ── */
+  .kopf {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    flex-wrap: wrap;
+  }
+  .logo {
+    width: clamp(220px, 40vw, 340px);
+    height: auto;
+  }
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0.45rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.7);
+    backdrop-filter: blur(6px);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .punkt {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 0 0 rgb(212 13 18 / 0.5);
+    animation: puls 2.2s infinite;
+  }
+  @keyframes puls {
+    70% {
+      box-shadow: 0 0 0 9px rgb(212 13 18 / 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgb(212 13 18 / 0);
+    }
+  }
+
+  /* ── Hero ── */
+  .hero {
+    padding: clamp(3rem, 10vw, 7rem) 0 clamp(2.5rem, 6vw, 4rem);
+    max-width: 720px;
+  }
+  .eyebrow {
+    margin: 0 0 0.9rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+  h1 {
+    font-size: clamp(2.6rem, 7.5vw, 5rem);
+    letter-spacing: -0.01em;
+  }
+  h1 em,
+  h2 em {
+    color: var(--red);
+    font-style: italic;
+  }
+  .lead {
+    margin: 1.5rem 0 0;
+    font-size: clamp(1.05rem, 2vw, 1.2rem);
+    color: var(--muted);
+    max-width: 560px;
+  }
+  .aktionen {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.9rem 1.6rem;
+    border-radius: 999px;
+    font-size: 0.98rem;
+    font-weight: 450;
+    text-decoration: none;
+    transition: transform 0.2s, background 0.2s, border-color 0.2s, color 0.2s;
+  }
+  .btn svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+  }
+  .btn-primaer {
+    background: var(--red);
+    color: #fff;
+    box-shadow: 0 10px 24px -10px rgb(212 13 18 / 0.7);
+  }
+  .btn-primaer:hover {
+    background: var(--red-dark);
+    transform: translateY(-2px);
+  }
+  .btn-sekundaer {
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .btn-sekundaer:hover {
+    border-color: var(--red);
+    color: var(--red);
+    transform: translateY(-2px);
+  }
+
+  /* ── Kontaktkarten ── */
+  .kontakt {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 1rem;
+  }
+  .karte {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 1.4rem 1.5rem;
+    background: var(--paper);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    text-decoration: none;
+    border-top: 3px solid transparent;
+    transition: transform 0.2s, border-color 0.2s;
+    min-width: 0;
+  }
+  .karte:hover {
+    transform: translateY(-3px);
+    border-top-color: var(--red);
+  }
+  .label {
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .karte-email .wert :global(a) {
+    text-decoration: none;
+  }
+  .karte-email:hover .wert :global(a) {
+    color: var(--red);
+  }
+  .wert {
+    font-size: 1.05rem;
+    font-weight: 450;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+  }
+
+  /* ── Über mich ── */
+  .ueber {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 2rem 4rem;
+    margin-top: clamp(4rem, 10vw, 6.5rem);
+    padding-top: clamp(2.5rem, 6vw, 4rem);
+    border-top: 1px solid var(--line);
+  }
+  h2 {
+    font-size: clamp(2rem, 4.5vw, 2.9rem);
+  }
+  .ueber-text p {
+    margin: 0 0 1rem;
+  }
+
+  /* ── Leistungen ── */
+  .leistungen {
+    margin-top: clamp(3rem, 8vw, 5rem);
+  }
+  .leistungen ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .leistungen li {
+    padding: 0.55rem 1.1rem;
+    border-radius: 999px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    font-size: 0.95rem;
+    color: var(--text);
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .leistungen li:hover {
+    background: var(--red-soft);
+    border-color: var(--red-soft);
+    color: var(--red-dark);
+  }
+
+  @media (max-width: 720px) {
+    .ueber {
+      grid-template-columns: 1fr;
+    }
+    .kopf {
+      justify-content: center;
+    }
+    .btn {
+      flex: 1 1 100%;
+      justify-content: center;
+    }
+  }
+</style>

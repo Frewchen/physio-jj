@@ -1,0 +1,42 @@
+---
+import { praxis } from "../data/praxis";
+const jahr = new Date().getFullYear();
+---
+
+<footer class="fuss">
+  <span>© {jahr} {praxis.name} · {praxis.strasse}, {praxis.plz} {praxis.ort}</span>
+  <nav aria-label="Rechtliches">
+    <a href="/impressum/">Impressum</a>
+    <a href="/datenschutz/">Datenschutz</a>
+  </nav>
+</footer>
+
+<style>
+  .fuss {
+    position: relative;
+    z-index: 1;
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 2rem 16px 2.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.75rem 2rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+    border-top: 1px solid var(--line);
+  }
+  nav {
+    display: flex;
+    gap: 1.5rem;
+  }
+  a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--red);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>

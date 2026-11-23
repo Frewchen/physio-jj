@@ -1,0 +1,103 @@
+---
+import Rechtstext from "../layouts/Rechtstext.astro";
+import Email from "../components/Email.astro";
+import { praxis, recht } from "../data/praxis";
+---
+
+<Rechtstext title="Impressum" description="Impressum der Praxis Physiotherapie Jeannette Jasinski in Hamburg.">
+  <h2>Angaben gemäß § 5 DDG</h2>
+  <p>
+    {praxis.inhaberin}<br />
+    {praxis.name}<br />
+    {praxis.strasse}<br />
+    {praxis.plz} {praxis.ort}
+  </p>
+
+  <h2>Kontakt</h2>
+  <p>
+    Telefon: <a href={praxis.telefon.href}>{praxis.telefon.anzeige}</a><br />
+    Mobil: <a href={praxis.mobil.href}>{praxis.mobil.anzeige}</a><br />
+    E-Mail: <Email />
+  </p>
+
+  <h2>Berufsbezeichnung und berufsrechtliche Regelungen</h2>
+  <p>
+    Berufsbezeichnung: {recht.berufsbezeichnung}<br />
+    Verliehen in: {recht.verliehenIn}
+  </p>
+  <p>Es gelten folgende berufsrechtliche Regelungen:</p>
+  <ul>
+    <li>
+      Gesetz über die Berufe in der Physiotherapie (Masseur- und Physiotherapeutengesetz – MPhG)
+    </li>
+    <li>Ausbildungs- und Prüfungsverordnung für Physiotherapeuten (PhysThAPrV)</li>
+  </ul>
+  <p>
+    Die Regelungen sind einsehbar unter{" "}
+    <a href="https://www.gesetze-im-internet.de/mphg/" target="_blank" rel="noopener">gesetze-im-internet.de/mphg</a>{" "}
+    und{" "}
+    <a href="https://www.gesetze-im-internet.de/physth-aprv/" target="_blank" rel="noopener">gesetze-im-internet.de/physth-aprv</a>.
+  </p>
+
+  {
+    recht.aufsichtsbehoerde && (
+      <>
+        <h2>Zuständige Aufsichtsbehörde</h2>
+        <p set:html={recht.aufsichtsbehoerde.replaceAll("\n", "<br />")} />
+      </>
+    )
+  }
+
+  {
+    recht.ustId && (
+      <>
+        <h2>Umsatzsteuer-ID</h2>
+        <p>Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz: {recht.ustId}</p>
+      </>
+    )
+  }
+
+  <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
+  <p>
+    {praxis.inhaberin}<br />
+    {praxis.strasse}, {praxis.plz} {praxis.ort}
+  </p>
+
+  <h2>Verbraucherstreitbeilegung</h2>
+  <p>
+    Ich bin nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor einer
+    Verbraucherschlichtungsstelle teilzunehmen.
+  </p>
+
+  <h2>Haftung für Inhalte</h2>
+  <p>
+    Die Inhalte dieser Website wurden mit größter Sorgfalt erstellt. Für die Richtigkeit,
+    Vollständigkeit und Aktualität der Inhalte kann ich jedoch keine Gewähr übernehmen. Als
+    Diensteanbieterin bin ich gemäß § 7 Abs. 1 DDG für eigene Inhalte auf diesen Seiten nach den
+    allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 DDG bin ich jedoch nicht verpflichtet,
+    übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu
+    forschen, die auf eine rechtswidrige Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder
+    Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt.
+    Bei Bekanntwerden entsprechender Rechtsverletzungen werde ich diese Inhalte umgehend entfernen.
+  </p>
+  <p>
+    Die Informationen auf dieser Website ersetzen keine ärztliche Diagnose oder Behandlung.
+  </p>
+
+  <h2>Haftung für Links</h2>
+  <p>
+    Diese Website enthält Links zu externen Websites Dritter, auf deren Inhalte ich keinen Einfluss
+    habe. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber
+    verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche
+    Rechtsverstöße überprüft; rechtswidrige Inhalte waren zu diesem Zeitpunkt nicht erkennbar. Bei
+    Bekanntwerden von Rechtsverletzungen werde ich derartige Links umgehend entfernen.
+  </p>
+
+  <h2>Urheberrecht</h2>
+  <p>
+    Die Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die
+    Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen
+    des Urheberrechts bedürfen der schriftlichen Zustimmung der Autorin. Soweit Inhalte nicht von
+    mir erstellt wurden, werden die Urheberrechte Dritter beachtet und entsprechend gekennzeichnet.
+  </p>
+</Rechtstext>

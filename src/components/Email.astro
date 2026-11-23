@@ -1,0 +1,16 @@
+---
+// Zeigt die E-Mail-Adresse als "mail [at] domain" an und macht daraus im Browser
+// einen normalen mailto-Link, damit einfache Spam-Bots sie nicht auslesen.
+import { praxis } from "../data/praxis";
+const { user, domain } = praxis.email;
+---
+
+<a class="js-email" href="#" data-user={user} data-domain={domain}>{user} [at] {domain}</a>
+
+<script>
+  document.querySelectorAll<HTMLAnchorElement>("a.js-email").forEach((a) => {
+    const adresse = `${a.dataset.user}@${a.dataset.domain}`;
+    a.href = `mailto:${adresse}`;
+    a.textContent = adresse;
+  });
+</script>
