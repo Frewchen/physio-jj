@@ -5,17 +5,18 @@ import logo from "../assets/logo.png";
 import { praxis } from "../data/praxis";
 
 const links = [
-  { href: "/#ueber-mich", text: "Über mich" },
-  { href: "/#leistungen", text: "Leistungen" },
-  { href: "/#beschwerden", text: "Beschwerden" },
-  { href: "/#ablauf", text: "Ablauf" },
-  { href: "/#kontakt", text: "Kontakt" },
+  { href: url("/#ueber-mich"), text: "Über mich" },
+  { href: url("/#leistungen"), text: "Leistungen" },
+  { href: url("/#beschwerden"), text: "Beschwerden" },
+  { href: url("/#ablauf"), text: "Ablauf" },
+  { href: url("/#kontakt"), text: "Kontakt" },
 ];
+import { url } from "../lib/url";
 ---
 
 <header class="kopfzeile" id="kopfzeile">
   <div class="innen">
-    <a href="/" class="marke" aria-label="Zur Startseite">
+    <a href={url("/")} class="marke" aria-label="Zur Startseite">
       <Image src={logo} alt="Physiotherapie Jeannette Jasinski" width={220} densities={[1, 2]} loading="eager" />
     </a>
 

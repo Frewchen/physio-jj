@@ -28,6 +28,7 @@ const jsonLd = {
   },
   geo: { "@type": "GeoCoordinates", latitude: lat, longitude: lng },
 };
+import { url } from "../lib/url";
 ---
 
 <Base
@@ -296,7 +297,7 @@ const jsonLd = {
               <button class="btn btn-sekundaer" type="button" id="karte-laden">Karte anzeigen</button>
               <small>
                 Beim Laden der Karte werden Daten an OpenStreetMap übertragen.{" "}
-                <a href="/datenschutz/#karte">Mehr erfahren</a>
+                <a href={url("/datenschutz/#karte")}>Mehr erfahren</a>
               </small>
             </div>
           </div>

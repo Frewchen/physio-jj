@@ -14,6 +14,7 @@ interface Props {
 
 const { title, description } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
+import { url, istVorschau } from "../lib/url";
 ---
 
 <!doctype html>
@@ -23,8 +24,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {istVorschau ? <meta name="robots" content="noindex, nofollow, noarchive" /> : <link rel="canonical" href={canonical} />}
+    <link rel="icon" type="image/svg+xml" href={url("/favicon.svg")} />
     <meta name="theme-color" content="#faf6f3" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="de_DE" />
@@ -35,6 +36,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <slot name="head" />
   </head>
   <body>
+    {istVorschau && <div class="vorschau-hinweis">Vorschau – nicht veröffentlicht</div>}
     <slot />
     <script>
       const elemente = document.querySelectorAll(".einblenden");
