@@ -1,8 +1,13 @@
 name: Deploy to GitHub Pages
 
+# Veröffentlicht die Website aus "main".
+# Zusätzlich wird der Branch "neue-website" als nicht öffentliche Vorschau in einen
+# geheimen Unterordner gebaut. Der Ordnername steht im Repository-Secret VORSCHAU_PFAD
+# und taucht daher nicht im (öffentlichen) Code auf.
+
 on:
   push:
-    branches: [main]
+    branches: [main, neue-website]
   workflow_dispatch:
 
 permissions:
@@ -17,11 +22,45 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      VORSCHAU_PFAD: ${{ secrets.VORSCHAU_PFAD }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: withastro/action@v4
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: site
+
+      - name: Checkout neue-website (Vorschau)
+        if: env.VORSCHAU_PFAD != ''
+        uses: actions/checkout@v4
+        with:
+          ref: neue-website
+          path: vorschau
+
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
+
+      - name: Build main
+        working-directory: site
+        run: |
+          npm ci
+          npm run build
+
+      - name: Build Vorschau in geheimen Unterordner
+        if: env.VORSCHAU_PFAD != ''
+        working-directory: vorschau
+        run: |
+          npm ci
+          BASE="/$VORSCHAU_PFAD/" VORSCHAU=1 npm run build > /dev/null
+          rm -f dist/CNAME dist/robots.txt
+          mkdir -p "../site/dist/$VORSCHAU_PFAD"
+          cp -R dist/. "../site/dist/$VORSCHAU_PFAD/"
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/dist
 
   deploy:
     needs: build
