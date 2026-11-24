@@ -1,8 +1,7 @@
 ---
-import { Image } from "astro:assets";
 import Base from "./Base.astro";
+import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-import logo from "../assets/logo.png";
 
 interface Props {
   title: string;
@@ -13,14 +12,8 @@ const { title, description } = Astro.props;
 ---
 
 <Base title={`${title} – Physiotherapie Jeannette Jasinski`} description={description}>
-  <div class="rahmen">
-    <header class="kopf">
-      <a href="/" aria-label="Zur Startseite">
-        <Image src={logo} alt="Physiotherapie Jeannette Jasinski" width={240} class="logo" />
-      </a>
-      <a class="zurueck" href="/">← Zur Startseite</a>
-    </header>
-
+  <Header />
+  <div class="container rahmen">
     <main class="text">
       <h1>{title}</h1>
       <slot />
@@ -31,33 +24,12 @@ const { title, description } = Astro.props;
 
 <style>
   .rahmen {
-    max-width: 1040px;
-    margin: 0 auto;
-    padding: clamp(1.5rem, 4vw, 3rem) 16px 4rem;
+    padding-top: clamp(1.5rem, 4vw, 3rem);
+    padding-bottom: 4rem;
   }
-  .kopf {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-  .logo {
-    width: clamp(180px, 30vw, 240px);
-    height: auto;
-  }
-  .zurueck {
-    font-size: 0.9rem;
-    color: var(--muted);
-    text-decoration: none;
-  }
-  .zurueck:hover {
-    color: var(--red);
-  }
-
   .text {
     max-width: 720px;
-    margin-top: clamp(2.5rem, 7vw, 4.5rem);
+    margin-top: clamp(1.5rem, 5vw, 3rem);
   }
   .text :global(h1) {
     font-size: clamp(2.4rem, 6vw, 3.6rem);

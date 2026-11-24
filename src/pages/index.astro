@@ -1,12 +1,17 @@
 ---
 import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
-import logo from "../assets/logo.png";
+import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import Email from "../components/Email.astro";
-import { praxis, leistungen } from "../data/praxis";
+import Icon from "../components/Icon.astro";
+import zeichen from "../assets/zeichen.png";
+import { praxis } from "../data/praxis";
+import { leistungsGruppen, beschwerden, ansatz, ablauf, mitbringen } from "../data/inhalte";
 
-const routeUrl = `https://www.openstreetmap.org/?mlat=${praxis.geo.lat}&mlon=${praxis.geo.lng}#map=17/${praxis.geo.lat}/${praxis.geo.lng}`;
+const { lat, lng } = praxis.geo;
+const osmLink = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=17/${lat}/${lng}`;
+const osmEmbed = `https://www.openstreetmap.org/export/embed.html?bbox=${lng - 0.008}%2C${lat - 0.0035}%2C${lng + 0.008}%2C${lat + 0.0035}&layer=mapnik&marker=${lat}%2C${lng}`;
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -21,336 +26,884 @@ const jsonLd = {
     addressLocality: praxis.ort,
     addressCountry: "DE",
   },
-  geo: { "@type": "GeoCoordinates", latitude: praxis.geo.lat, longitude: praxis.geo.lng },
+  geo: { "@type": "GeoCoordinates", latitude: lat, longitude: lng },
 };
 ---
 
 <Base
-  title="Physiotherapie Jeannette Jasinski – Hamburg"
-  description="Physiotherapie, Manuelle Therapie, Lymphdrainage, Hausbesuche und mentales GesundheitsCoaching in Hamburg. Meine neue Website entsteht – telefonisch bin ich wie gewohnt für Sie da."
+  title="Physiotherapie Jeannette Jasinski – Physiotherapie & GesundheitsCoaching in Hamburg"
+  description="Physiotherapie in Hamburg: Krankengymnastik, Manuelle Therapie, Lymphdrainage, Faszientherapie, Massage, Hausbesuche und mentales GesundheitsCoaching bei Jeannette Jasinski."
 >
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
-  <div class="deko" aria-hidden="true">
-    <span class="sonne"></span>
-  </div>
+  <Header />
 
-  <main class="seite">
-    <header class="kopf">
-      <Image src={logo} alt="Physiotherapie Jeannette Jasinski" width={360} class="logo" loading="eager" />
-      <p class="status"><span class="punkt" aria-hidden="true"></span>Neue Website im Aufbau</p>
-    </header>
-
+  <main>
+    <!-- ═══ HERO ═══ -->
     <section class="hero">
-      <p class="eyebrow">Physiotherapie in Hamburg</p>
-      <h1>Wenn Bewegung wieder <em>Spaß&nbsp;macht.</em></h1>
-      <p class="lead">
-        Hier entsteht gerade meine neue Website. Für Termine, Hausbesuche und Fragen bin ich
-        wie gewohnt persönlich für Sie da – rufen Sie einfach an.
-      </p>
-      <div class="aktionen">
-        <a class="btn btn-primaer" href={praxis.telefon.href}>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z" /></svg>
-          {praxis.telefon.anzeige}
-        </a>
-        <a class="btn btn-sekundaer" href={praxis.mobil.href}>Mobil: {praxis.mobil.anzeige}</a>
+      <div class="container hero-raster">
+        <div class="hero-text">
+          <p class="eyebrow">Physiotherapie in Hamburg</p>
+          <h1>Wenn Bewegung wieder <em>Spaß&nbsp;macht.</em></h1>
+          <p class="einleitung">
+            Ich begleite Sie mit Physiotherapie, Massage und mentalem GesundheitsCoaching zurück
+            zu mehr Beweglichkeit, weniger Schmerzen und neuer Lebensqualität – in meiner Praxis
+            oder bei Ihnen zu Hause.
+          </p>
+          <div class="aktionen">
+            <a class="btn btn-primaer" href={praxis.telefon.href}>
+              <Icon name="phone" size={18} />
+              Termin vereinbaren
+            </a>
+            <a class="btn btn-sekundaer" href="#leistungen">Leistungen ansehen</a>
+          </div>
+        </div>
+
+        <div class="hero-bild" aria-hidden="true">
+          <div class="sonne"></div>
+          <div class="schwebe schwebe-1">
+            <span class="schwebe-icon"><Icon name="calendar-check" size={20} /></span>
+            <span><strong>Seit 2015</strong><br />Physiotherapeutin</span>
+          </div>
+          <div class="schwebe schwebe-2">
+            <span class="schwebe-icon"><Icon name="house-heart" size={20} /></span>
+            <span><strong>Hausbesuche</strong><br />in Hamburg</span>
+          </div>
+          <div class="schwebe schwebe-3">
+            <span class="schwebe-icon"><Icon name="brain" size={20} /></span>
+            <span><strong>Körper & Kopf</strong><br />ganzheitlich</span>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section class="kontakt" aria-label="Kontakt">
-      <a class="karte" href={praxis.telefon.href}>
-        <span class="label">Praxis</span>
-        <span class="wert">{praxis.telefon.anzeige}</span>
-      </a>
-      <a class="karte" href={praxis.mobil.href}>
-        <span class="label">Mobil</span>
-        <span class="wert">{praxis.mobil.anzeige}</span>
-      </a>
-      <div class="karte karte-email">
-        <span class="label">E-Mail</span>
-        <span class="wert"><Email /></span>
+    <!-- ═══ ÜBER MICH ═══ -->
+    <section class="abschnitt ueber" id="ueber-mich">
+      <div class="container ueber-raster">
+        <figure class="portrait einblenden">
+          <!-- PRÜFEN: Hier kommt ein Porträtfoto von Jeannette hinein. -->
+          <div class="portrait-platzhalter">
+            <Image src={zeichen} alt="" width={180} densities={[1, 1.35]} />
+            <span>Porträtfoto folgt</span>
+          </div>
+          <figcaption>
+            <strong>Jeannette Jasinski</strong>
+            Staatlich anerkannte Physiotherapeutin & Mentaler GesundheitsCoach
+          </figcaption>
+        </figure>
+
+        <div class="einblenden">
+          <p class="eyebrow">Über mich</p>
+          <h2 class="titel">Hallo, ich bin <em>Jeannette.</em></h2>
+          <p class="einleitung">
+            Ich bin staatlich anerkannte Physiotherapeutin in Hamburg. Seit dem Abschluss meiner
+            Ausbildung im Jahr 2015 bin ich für viele Menschen Ansprechpartnerin rund um Bewegung,
+            Krankengymnastik, Massage und das gesamte Spektrum des Bewegungsapparates.
+          </p>
+          <p>
+            2019 habe ich zusätzlich eine Ausbildung zum Mentalen GesundheitsCoach abgeschlossen.
+            Dieses Wissen fließt in meine Therapien ein – und ich biete mentales GesundheitsCoaching
+            auch als eigenes Angebot an. So können wir gemeinsam innere Blockaden lösen, die Ihre
+            Genesung beeinträchtigen.
+          </p>
+          <blockquote>
+            Das Ziel einer erfolgreichen Therapie ist, Ihr Wohlbefinden und Ihre Lebensqualität
+            wiederherzustellen.
+          </blockquote>
+          <ul class="meilensteine">
+            <li><span>2015</span> Staatlich anerkannte Physiotherapeutin</li>
+            <li><span>2019</span> Ausbildung zum Mentalen GesundheitsCoach</li>
+            <li><span>Heute</span> Eigene Praxis in Hamburg & Hausbesuche</li>
+          </ul>
+        </div>
       </div>
-      <a class="karte" href={routeUrl} target="_blank" rel="noopener">
-        <span class="label">Adresse</span>
-        <span class="wert">{praxis.strasse}<br />{praxis.plz} {praxis.ort}</span>
-      </a>
     </section>
 
-    <section class="ueber">
-      <div>
-        <p class="eyebrow">Über mich</p>
-        <h2>Ganzheitlich für Körper <em>und</em> Kopf</h2>
-      </div>
-      <div class="ueber-text">
-        <p>
-          Ich bin Jeannette, staatlich anerkannte Physiotherapeutin in Hamburg. Seit 2015 begleite
-          ich Menschen rund um Bewegung, Krankengymnastik, Massage und das gesamte Spektrum des
-          Bewegungsapparates.
-        </p>
-        <p>
-          Als ausgebildeter Mentaler GesundheitsCoach (seit 2019) beziehe ich auch innere
-          Blockaden mit ein, die Genesung und Heilung im Weg stehen können – damit Sie
-          Wohlbefinden und Lebensqualität nachhaltig zurückgewinnen.
-        </p>
+    <!-- ═══ BESCHWERDEN ═══ -->
+    <section class="abschnitt beschwerden" id="beschwerden">
+      <div class="container beschwerden-raster">
+        <div class="einblenden">
+          <p class="eyebrow">Wobei ich helfe</p>
+          <h2 class="titel">Rückenschmerzen sind eine echte <em>Volkskrankheit.</em></h2>
+          <p class="einleitung">
+            Oft lässt sich keine eindeutige Ursache feststellen. Häufig stecken
+            Muskelverspannungen, Wirbelblockaden, Bandscheibenvorfälle oder Gelenkbeschwerden
+            dahinter.
+          </p>
+          <p>
+            Doch nicht nur der Rücken schränkt im Alltag ein. Ich behandle das gesamte Spektrum des
+            Bewegungsapparates – zum Beispiel bei diesen Beschwerden:
+          </p>
+        </div>
+        <div class="einblenden">
+          <div class="statistik">
+            <span class="zahl">20&nbsp;Mio.</span>
+            <span>Menschen gehen in Deutschland jedes Jahr wegen Rückenschmerzen zum Arzt.</span>
+          </div>
+          <ul class="beschwerde-liste">
+            {beschwerden.map((b) => <li>{b}</li>)}
+          </ul>
+        </div>
       </div>
     </section>
 
-    <section class="leistungen">
-      <p class="eyebrow">Leistungen</p>
-      <ul>
-        {leistungen.map((l) => <li>{l}</li>)}
-      </ul>
+    <!-- ═══ LEISTUNGEN ═══ -->
+    <section class="abschnitt leistungen" id="leistungen">
+      <div class="container">
+        <div class="kopf-mittig einblenden">
+          <p class="eyebrow">Leistungen</p>
+          <h2 class="titel">Mein <em>Therapieangebot</em></h2>
+          <p class="einleitung">
+            Ein umfangreiches Angebot zur Genesung, Entspannung und Vorbeugung – abgestimmt auf
+            Ihre Beschwerden und Ihre Ziele.
+          </p>
+        </div>
+
+        {
+          leistungsGruppen.map((gruppe) => (
+            <div class="gruppe">
+              <div class="gruppe-kopf einblenden">
+                <h3>{gruppe.titel}</h3>
+                <p>{gruppe.intro}</p>
+              </div>
+              <div class="karten" data-anzahl={gruppe.leistungen.length}>
+                {gruppe.leistungen.map((l) => (
+                  <article class="karte einblenden">
+                    <span class="karte-icon">
+                      <Icon name={l.icon} size={22} />
+                    </span>
+                    <h4>{l.titel}</h4>
+                    <p>{l.text}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
+          ))
+        }
+
+        <aside class="hausbesuch einblenden">
+          <span class="hausbesuch-icon"><Icon name="house-heart" size={30} /></span>
+          <div>
+            <h3>Hausbesuche</h3>
+            <p>
+              Sie können nicht in die Praxis kommen? Dann komme ich zu Ihnen nach Hause.
+              Sprechen Sie mich einfach an.
+            </p>
+          </div>
+          <a class="btn btn-primaer" href={praxis.telefon.href}>Hausbesuch anfragen</a>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ═══ ANSATZ ═══ -->
+    <section class="abschnitt ansatz" id="ansatz">
+      <div class="container">
+        <div class="kopf-mittig einblenden">
+          <p class="eyebrow">Mein Ansatz</p>
+          <h2 class="titel">Ganzheitlich – für <em>Körper</em> und <em>Kopf</em></h2>
+          <p class="einleitung">
+            Körperliche Beschwerden hängen oft mit Stress, Gewohnheiten und inneren Blockaden
+            zusammen. Deshalb betrachte ich Sie als ganzen Menschen.
+          </p>
+        </div>
+        <div class="saeulen">
+          {
+            ansatz.map((a) => (
+              <div class="saeule einblenden">
+                <Icon name={a.icon} size={30} />
+                <h3>{a.titel}</h3>
+                <p>{a.text}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ ABLAUF ═══ -->
+    <section class="abschnitt ablauf" id="ablauf">
+      <div class="container ablauf-raster">
+        <div class="einblenden">
+          <p class="eyebrow">So läuft es ab</p>
+          <h2 class="titel">Ihr Weg zu <em>mehr Bewegung</em></h2>
+          <div class="mitbringen">
+            <h3><Icon name="clipboard-list" size={20} /> Bitte mitbringen</h3>
+            <ul>
+              {mitbringen.map((m) => <li>{m}</li>)}
+            </ul>
+          </div>
+        </div>
+        <ol class="schritte">
+          {
+            ablauf.map((s, i) => (
+              <li class="einblenden">
+                <span class="nummer">{String(i + 1).padStart(2, "0")}</span>
+                <div>
+                  <h3>{s.titel}</h3>
+                  <p>{s.text}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <!-- ═══ KONTAKT ═══ -->
+    <section class="abschnitt kontakt" id="kontakt">
+      <div class="container">
+        <div class="kopf-mittig einblenden">
+          <p class="eyebrow">Kontakt & Anfahrt</p>
+          <h2 class="titel">Ich freue mich auf <em>Sie.</em></h2>
+          <p class="einleitung">
+            Termine vereinbaren Sie am besten telefonisch. Ist die Leitung besetzt, rufe ich Sie
+            gern zurück.
+          </p>
+        </div>
+
+        <div class="kontakt-raster">
+          <div class="kontakt-karte einblenden">
+            <a class="zeile" href={praxis.telefon.href}>
+              <span class="zeile-icon"><Icon name="phone" size={20} /></span>
+              <span><small>Telefon Praxis</small>{praxis.telefon.anzeige}</span>
+            </a>
+            <a class="zeile" href={praxis.mobil.href}>
+              <span class="zeile-icon"><Icon name="phone" size={20} /></span>
+              <span><small>Mobil</small>{praxis.mobil.anzeige}</span>
+            </a>
+            <div class="zeile">
+              <span class="zeile-icon"><Icon name="mail" size={20} /></span>
+              <span><small>E-Mail</small><Email /></span>
+            </div>
+            <a class="zeile" href={osmLink} target="_blank" rel="noopener">
+              <span class="zeile-icon"><Icon name="map-pin" size={20} /></span>
+              <span><small>Adresse</small>{praxis.strasse}, {praxis.plz} {praxis.ort}</span>
+            </a>
+            <div class="zeile">
+              <span class="zeile-icon"><Icon name="clock" size={20} /></span>
+              <!-- PRÜFEN: Sprechzeiten ergänzen, falls gewünscht -->
+              <span><small>Termine</small>Nach Vereinbarung</span>
+            </div>
+            <a class="btn btn-primaer voll" href={praxis.telefon.href}>
+              <Icon name="phone" size={18} /> Jetzt anrufen
+            </a>
+          </div>
+
+          <div class="karte-osm einblenden" id="karte" data-src={osmEmbed}>
+            <div class="karte-hinweis">
+              <Icon name="map-pin" size={34} />
+              <p><strong>{praxis.strasse}</strong><br />{praxis.plz} {praxis.ort}</p>
+              <button class="btn btn-sekundaer" type="button" id="karte-laden">Karte anzeigen</button>
+              <small>
+                Beim Laden der Karte werden Daten an OpenStreetMap übertragen.{" "}
+                <a href="/datenschutz/#karte">Mehr erfahren</a>
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 
   <Footer />
 </Base>
 
+<script>
+  const karte = document.getElementById("karte");
+  document.getElementById("karte-laden")?.addEventListener("click", () => {
+    if (!karte) return;
+    const iframe = document.createElement("iframe");
+    iframe.src = karte.dataset.src!;
+    iframe.title = "Karte: Lage der Praxis";
+    iframe.loading = "lazy";
+    karte.replaceChildren(iframe);
+    karte.classList.add("geladen");
+  });
+</script>
+
 <style>
-  /* ── Dekorativer Hintergrund (Anlehnung an die rote Sonne im Logo) ── */
-  .deko {
-    position: fixed;
-    inset: 0;
-    overflow: hidden;
-    pointer-events: none;
-    z-index: 0;
-  }
-  .sonne {
-    position: absolute;
-    width: min(70vw, 760px);
-    aspect-ratio: 1;
-    right: max(-22vw, -260px);
-    top: -14vw;
-    border-radius: 50%;
-    background:
-      repeating-linear-gradient(-28deg, transparent 0 46px, rgb(255 255 255 / 0.55) 46px 52px),
-      radial-gradient(circle at 35% 35%, #e8343a, var(--red) 60%, var(--red-dark));
-    opacity: 0.11;
-    animation: schweben 14s ease-in-out infinite alternate;
-  }
-  @keyframes schweben {
-    to {
-      transform: translate(-2vw, 3vw) rotate(6deg);
-    }
-  }
-
-  .seite {
-    position: relative;
-    z-index: 1;
-    max-width: 1040px;
-    margin: 0 auto;
-    padding: clamp(1.5rem, 4vw, 3rem) 16px 3rem;
-  }
-
-  /* ── Kopf ── */
-  .kopf {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem 2rem;
-    flex-wrap: wrap;
-  }
-  .logo {
-    width: clamp(220px, 40vw, 340px);
-    height: auto;
-  }
-  .status {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin: 0;
-    padding: 0.45rem 1rem;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: rgb(255 255 255 / 0.7);
-    backdrop-filter: blur(6px);
-    font-size: 0.8rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .punkt {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--red);
-    box-shadow: 0 0 0 0 rgb(212 13 18 / 0.5);
-    animation: puls 2.2s infinite;
-  }
-  @keyframes puls {
-    70% {
-      box-shadow: 0 0 0 9px rgb(212 13 18 / 0);
-    }
-    100% {
-      box-shadow: 0 0 0 0 rgb(212 13 18 / 0);
-    }
-  }
-
   /* ── Hero ── */
   .hero {
-    padding: clamp(3rem, 10vw, 7rem) 0 clamp(2.5rem, 6vw, 4rem);
-    max-width: 720px;
+    position: relative;
+    overflow: hidden;
+    padding: clamp(3rem, 8vw, 6rem) 0 clamp(4rem, 9vw, 7rem);
   }
-  .eyebrow {
-    margin: 0 0 0.9rem;
-    font-size: 0.78rem;
-    font-weight: 500;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--red);
+  .hero-raster {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+    gap: 3rem;
   }
   h1 {
-    font-size: clamp(2.6rem, 7.5vw, 5rem);
-    letter-spacing: -0.01em;
+    font-size: clamp(2.8rem, 7vw, 5.4rem);
+    letter-spacing: -0.015em;
   }
-  h1 em,
-  h2 em {
+  h1 em {
     color: var(--red);
     font-style: italic;
-  }
-  .lead {
-    margin: 1.5rem 0 0;
-    font-size: clamp(1.05rem, 2vw, 1.2rem);
-    color: var(--muted);
-    max-width: 560px;
   }
   .aktionen {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
-    margin-top: 2rem;
-  }
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.9rem 1.6rem;
-    border-radius: 999px;
-    font-size: 0.98rem;
-    font-weight: 450;
-    text-decoration: none;
-    transition: transform 0.2s, background 0.2s, border-color 0.2s, color 0.2s;
-  }
-  .btn svg {
-    width: 18px;
-    height: 18px;
-    fill: currentColor;
-  }
-  .btn-primaer {
-    background: var(--red);
-    color: #fff;
-    box-shadow: 0 10px 24px -10px rgb(212 13 18 / 0.7);
-  }
-  .btn-primaer:hover {
-    background: var(--red-dark);
-    transform: translateY(-2px);
-  }
-  .btn-sekundaer {
-    border: 1px solid var(--line);
-    background: var(--paper);
-    color: var(--ink);
-  }
-  .btn-sekundaer:hover {
-    border-color: var(--red);
-    color: var(--red);
-    transform: translateY(-2px);
+    margin-top: 2.25rem;
   }
 
-  /* ── Kontaktkarten ── */
-  .kontakt {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-    gap: 1rem;
+  .hero-bild {
+    position: relative;
+    aspect-ratio: 1;
+    max-width: 500px;
+    width: 100%;
+    justify-self: end;
   }
-  .karte {
+  .sonne {
+    position: absolute;
+    inset: 6%;
+    border-radius: 50%;
+    background:
+      repeating-linear-gradient(-28deg, transparent 0 38px, rgb(255 255 255 / 0.5) 38px 44px) top left / 100% 46% no-repeat,
+      radial-gradient(circle at 35% 30%, #ef3a3f, var(--red) 55%, var(--red-dark));
+    box-shadow: 0 40px 80px -30px rgb(168 9 13 / 0.55);
+    animation: schweben 9s ease-in-out infinite alternate;
+  }
+  .schwebe {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1.15rem;
+    background: rgb(255 255 255 / 0.92);
+    backdrop-filter: blur(8px);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    font-size: 0.85rem;
+    line-height: 1.35;
+    color: var(--muted);
+    animation: schweben 7s ease-in-out infinite alternate;
+  }
+  .schwebe strong {
+    color: var(--ink);
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+  .schwebe-icon {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--red-soft);
+    color: var(--red);
+    flex-shrink: 0;
+  }
+  .schwebe-1 {
+    top: 10%;
+    left: -6%;
+  }
+  .schwebe-2 {
+    top: 46%;
+    right: -4%;
+    animation-delay: -2s;
+  }
+  .schwebe-3 {
+    bottom: 6%;
+    left: 6%;
+    animation-delay: -4s;
+  }
+  @keyframes schweben {
+    to {
+      transform: translateY(-12px);
+    }
+  }
+
+  /* ── Über mich ── */
+  .ueber {
+    background: var(--paper);
+  }
+  .ueber-raster {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: clamp(2.5rem, 6vw, 5rem);
+    align-items: center;
+  }
+  .portrait {
+    margin: 0;
+  }
+  .portrait-platzhalter {
+    aspect-ratio: 4 / 5;
+    border-radius: 28px 120px 28px 28px;
+    background: linear-gradient(160deg, #fdf1ef, #f6dcd8);
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 1rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .portrait-platzhalter img {
+    width: 45%;
+    opacity: 0.9;
+  }
+  .portrait figcaption {
+    margin-top: 1.1rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .portrait figcaption strong {
+    display: block;
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  blockquote {
+    margin: 2rem 0;
+    padding: 1.25rem 1.5rem;
+    border-left: 3px solid var(--red);
+    background: var(--red-soft);
+    border-radius: 0 14px 14px 0;
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--red-dark);
+  }
+  .meilensteine {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .meilensteine li {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+  }
+  .meilensteine span {
+    min-width: 3.6rem;
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--red);
+  }
+
+  /* ── Beschwerden ── */
+  .beschwerden-raster {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: clamp(2.5rem, 6vw, 5rem);
+  }
+  .statistik {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
-    padding: 1.4rem 1.5rem;
-    background: var(--paper);
+    gap: 0.4rem;
+    padding: 1.75rem 2rem;
     border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    text-decoration: none;
-    border-top: 3px solid transparent;
-    transition: transform 0.2s, border-color 0.2s;
-    min-width: 0;
+    background: var(--ink);
+    color: rgb(255 255 255 / 0.75);
+    margin-bottom: 1.5rem;
+  }
+  .zahl {
+    font-family: var(--font-serif);
+    font-size: clamp(3rem, 7vw, 4.4rem);
+    line-height: 1;
+    color: #fff;
+  }
+  .beschwerde-liste {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+  .beschwerde-liste li {
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    font-size: 0.93rem;
+  }
+
+  /* ── Leistungen ── */
+  .leistungen {
+    background: var(--paper);
+  }
+  .kopf-mittig {
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto clamp(2.5rem, 6vw, 4rem);
+  }
+  .kopf-mittig .einleitung {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .gruppe + .gruppe {
+    margin-top: 3rem;
+  }
+  .gruppe-kopf {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 1.25rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .gruppe-kopf h3 {
+    font-size: 1.8rem;
+  }
+  .gruppe-kopf p {
+    margin: 0;
+    color: var(--muted);
+  }
+  /* 12er-Raster: 3 oder 4 Karten pro Reihe; bei 5 Karten 3 + 2 breitere */
+  .karten {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1rem;
+  }
+  .karten > .karte {
+    grid-column: span 4;
+  }
+  .karten[data-anzahl="4"] > .karte {
+    grid-column: span 3;
+  }
+  .karten[data-anzahl="5"] > .karte:nth-child(n + 4) {
+    grid-column: span 6;
+  }
+  .karte {
+    padding: 1.6rem;
+    border-radius: var(--radius);
+    background: var(--cream);
+    border: 1px solid transparent;
+    transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s, background 0.25s;
   }
   .karte:hover {
-    transform: translateY(-3px);
-    border-top-color: var(--red);
+    background: var(--paper);
+    border-color: var(--line);
+    box-shadow: var(--shadow);
+    transform: translateY(-4px);
   }
-  .label {
+  .karte-icon {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    background: var(--red-soft);
+    color: var(--red);
+    margin-bottom: 1.1rem;
+  }
+  .karte h4 {
+    margin: 0 0 0.5rem;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.35;
+  }
+  .karte p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--muted);
+  }
+  .hausbesuch {
+    margin-top: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    padding: 1.75rem 2rem;
+    border-radius: var(--radius);
+    background: linear-gradient(120deg, var(--red), var(--red-dark));
+    color: rgb(255 255 255 / 0.88);
+  }
+  .hausbesuch > div {
+    flex: 1 1 300px;
+  }
+  .hausbesuch h3 {
+    color: #fff;
+    font-size: 1.8rem;
+  }
+  .hausbesuch p {
+    margin: 0.3rem 0 0;
+  }
+  .hausbesuch-icon {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.15);
+    color: #fff;
+  }
+  .hausbesuch .btn {
+    background: #fff;
+    color: var(--red-dark);
+    box-shadow: none;
+  }
+  .hausbesuch .btn:hover {
+    background: var(--cream);
+  }
+
+  /* ── Ansatz ── */
+  .ansatz {
+    background: var(--ink);
+    color: rgb(255 255 255 / 0.7);
+  }
+  .ansatz .titel {
+    color: #fff;
+  }
+  .ansatz .titel em,
+  .ansatz .eyebrow {
+    color: #ff6b6b;
+  }
+  .ansatz .einleitung {
+    color: rgb(255 255 255 / 0.65);
+  }
+  .saeulen {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+  .saeule {
+    padding: 2rem 1.6rem;
+    border-radius: var(--radius);
+    background: rgb(255 255 255 / 0.05);
+    border: 1px solid rgb(255 255 255 / 0.08);
+    transition: background 0.25s;
+  }
+  .saeule:hover {
+    background: rgb(212 13 18 / 0.14);
+  }
+  .saeule :global(svg) {
+    color: #ff6b6b;
+  }
+  .saeule h3 {
+    margin: 1rem 0 0.5rem;
+    font-size: 1.6rem;
+    color: #fff;
+  }
+  .saeule p {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  /* ── Ablauf ── */
+  .ablauf-raster {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: clamp(2.5rem, 6vw, 5rem);
+    align-items: start;
+  }
+  .mitbringen {
+    margin-top: 2rem;
+    padding: 1.5rem 1.75rem;
+    border-radius: var(--radius);
+    background: var(--paper);
+    box-shadow: var(--shadow);
+  }
+  .mitbringen h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+  }
+  .mitbringen h3 :global(svg) {
+    color: var(--red);
+  }
+  .mitbringen ul {
+    margin: 0;
+    padding-left: 1.2rem;
+    color: var(--muted);
+  }
+  .schritte {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+  .schritte li {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .nummer {
+    font-family: var(--font-serif);
+    font-size: 2.4rem;
+    line-height: 1;
+    color: var(--red);
+    min-width: 3rem;
+  }
+  .schritte h3 {
+    font-size: 1.6rem;
+    margin-bottom: 0.4rem;
+  }
+  .schritte p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  /* ── Kontakt ── */
+  .kontakt {
+    background: var(--paper);
+  }
+  .kontakt-raster {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 1.25rem;
+  }
+  .kontakt-karte {
+    padding: 1rem 1.75rem 1.75rem;
+    border-radius: var(--radius);
+    background: var(--cream);
+  }
+  .zeile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
+    color: var(--ink);
+    min-width: 0;
+  }
+  .zeile > span:last-child {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .zeile small {
+    display: block;
     font-size: 0.72rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--muted);
   }
-  .karte-email .wert :global(a) {
+  .zeile :global(a) {
+    color: var(--ink);
     text-decoration: none;
   }
-  .karte-email:hover .wert :global(a) {
+  a.zeile:hover,
+  .zeile :global(a:hover) {
     color: var(--red);
   }
-  .wert {
-    font-size: 1.05rem;
-    font-weight: 450;
-    color: var(--ink);
-    overflow-wrap: anywhere;
-  }
-
-  /* ── Über mich ── */
-  .ueber {
+  .zeile-icon {
     display: grid;
-    grid-template-columns: 1fr 1.4fr;
-    gap: 2rem 4rem;
-    margin-top: clamp(4rem, 10vw, 6.5rem);
-    padding-top: clamp(2.5rem, 6vw, 4rem);
-    border-top: 1px solid var(--line);
-  }
-  h2 {
-    font-size: clamp(2rem, 4.5vw, 2.9rem);
-  }
-  .ueber-text p {
-    margin: 0 0 1rem;
-  }
-
-  /* ── Leistungen ── */
-  .leistungen {
-    margin-top: clamp(3rem, 8vw, 5rem);
-  }
-  .leistungen ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-  }
-  .leistungen li {
-    padding: 0.55rem 1.1rem;
-    border-radius: 999px;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
     background: var(--paper);
-    border: 1px solid var(--line);
-    font-size: 0.95rem;
-    color: var(--text);
-    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    color: var(--red);
+    flex-shrink: 0;
   }
-  .leistungen li:hover {
-    background: var(--red-soft);
-    border-color: var(--red-soft);
-    color: var(--red-dark);
+  .voll {
+    width: 100%;
+    margin-top: 1.5rem;
+  }
+  .karte-osm {
+    min-height: 420px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 50% 45%, rgb(212 13 18 / 0.1), transparent 55%),
+      repeating-linear-gradient(0deg, transparent 0 39px, var(--line) 39px 40px),
+      repeating-linear-gradient(90deg, transparent 0 39px, var(--line) 39px 40px),
+      var(--cream);
+    display: grid;
+    place-items: center;
+  }
+  .karte-osm.geladen {
+    display: block;
+  }
+  .karte-osm :global(iframe) {
+    width: 100%;
+    height: 100%;
+    min-height: 420px;
+    border: 0;
+    display: block;
+  }
+  .karte-hinweis {
+    display: grid;
+    justify-items: center;
+    gap: 0.9rem;
+    text-align: center;
+    max-width: 320px;
+    padding: 2rem 1rem;
+    color: var(--red);
+  }
+  .karte-hinweis p {
+    margin: 0;
+    color: var(--ink);
+  }
+  .karte-hinweis small {
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+  .karte-hinweis small a {
+    color: var(--muted);
   }
 
-  @media (max-width: 720px) {
-    .ueber {
+  /* ── Responsiv ── */
+  @media (max-width: 960px) {
+    .hero-raster,
+    .ueber-raster,
+    .beschwerden-raster,
+    .ablauf-raster,
+    .kontakt-raster {
       grid-template-columns: 1fr;
     }
-    .kopf {
-      justify-content: center;
+    .hero-bild {
+      justify-self: center;
+      max-width: 420px;
     }
-    .btn {
+    .saeulen {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .karten > .karte,
+    .karten[data-anzahl] > .karte {
+      grid-column: span 6;
+    }
+    .karten[data-anzahl="3"] > .karte:last-child,
+    .karten[data-anzahl="5"] > .karte:last-child {
+      grid-column: span 12;
+    }
+    .portrait {
+      max-width: 420px;
+    }
+  }
+  @media (max-width: 560px) {
+    .saeulen {
+      grid-template-columns: 1fr;
+    }
+    .karten > .karte,
+    .karten[data-anzahl] > .karte {
+      grid-column: span 12;
+    }
+    .aktionen .btn {
       flex: 1 1 100%;
-      justify-content: center;
+    }
+    .schwebe {
+      font-size: 0.78rem;
+      padding: 0.65rem 0.85rem;
+    }
+    .schwebe-1 {
+      left: 0;
+    }
+    .schwebe-2 {
+      right: 0;
+    }
+    .schwebe-icon {
+      width: 32px;
+      height: 32px;
     }
   }
 </style>

@@ -31,9 +31,29 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
+    <script is:inline>document.documentElement.classList.add("js");</script>
     <slot name="head" />
   </head>
   <body>
     <slot />
+    <script>
+      const elemente = document.querySelectorAll(".einblenden");
+      if ("IntersectionObserver" in window) {
+        const beobachter = new IntersectionObserver(
+          (eintraege) => {
+            for (const e of eintraege) {
+              if (e.isIntersecting) {
+                e.target.classList.add("sichtbar");
+                beobachter.unobserve(e.target);
+              }
+            }
+          },
+          { rootMargin: "0px 0px -8% 0px" },
+        );
+        elemente.forEach((el) => beobachter.observe(el));
+      } else {
+        elemente.forEach((el) => el.classList.add("sichtbar"));
+      }
+    </script>
   </body>
 </html>

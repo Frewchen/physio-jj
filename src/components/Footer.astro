@@ -1,42 +1,103 @@
 ---
+import Email from "./Email.astro";
 import { praxis } from "../data/praxis";
 const jahr = new Date().getFullYear();
 ---
 
 <footer class="fuss">
-  <span>© {jahr} {praxis.name} · {praxis.strasse}, {praxis.plz} {praxis.ort}</span>
-  <nav aria-label="Rechtliches">
-    <a href="/impressum/">Impressum</a>
-    <a href="/datenschutz/">Datenschutz</a>
-  </nav>
+  <div class="container raster">
+    <div>
+      <p class="name">Physiotherapie<br /><em>Jeannette Jasinski</em></p>
+      <p class="klein">Physiotherapie, Manuelle Therapie und mentales GesundheitsCoaching in Hamburg.</p>
+    </div>
+    <div>
+      <p class="kopf">Kontakt</p>
+      <p>
+        <a href={praxis.telefon.href}>{praxis.telefon.anzeige}</a><br />
+        <a href={praxis.mobil.href}>{praxis.mobil.anzeige}</a><br />
+        <Email />
+      </p>
+    </div>
+    <div>
+      <p class="kopf">Praxis</p>
+      <p>{praxis.strasse}<br />{praxis.plz} {praxis.ort}</p>
+    </div>
+  </div>
+  <div class="container unten">
+    <span>© {jahr} {praxis.name}</span>
+    <nav aria-label="Rechtliches">
+      <a href="/impressum/">Impressum</a>
+      <a href="/datenschutz/">Datenschutz</a>
+    </nav>
+  </div>
 </footer>
 
 <style>
   .fuss {
-    position: relative;
-    z-index: 1;
-    max-width: 1040px;
-    margin: 0 auto;
-    padding: 2rem 16px 2.5rem;
+    background: var(--ink);
+    color: rgb(255 255 255 / 0.66);
+    padding-top: clamp(3.5rem, 8vw, 5rem);
+    font-size: 0.95rem;
+  }
+  .raster {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 2.5rem;
+    padding-bottom: 3rem;
+  }
+  p {
+    margin: 0;
+  }
+  .name {
+    font-family: var(--font-serif);
+    font-size: 1.9rem;
+    line-height: 1.15;
+    color: #fff;
+  }
+  .name em {
+    color: #ff6b6b;
+  }
+  .klein {
+    margin-top: 1rem;
+    max-width: 320px;
+  }
+  .kopf {
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 0.45);
+    margin-bottom: 0.75rem;
+  }
+  a,
+  .fuss :global(a.js-email) {
+    color: rgb(255 255 255 / 0.85);
+    text-decoration: none;
+    line-height: 1.9;
+  }
+  a:hover,
+  .fuss :global(a.js-email:hover) {
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .unten {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 0.75rem 2rem;
+    padding-top: 1.5rem;
+    padding-bottom: 2rem;
+    border-top: 1px solid rgb(255 255 255 / 0.12);
     font-size: 0.85rem;
-    color: var(--muted);
-    border-top: 1px solid var(--line);
   }
-  nav {
+  .unten nav {
     display: flex;
     gap: 1.5rem;
   }
-  a {
-    color: var(--muted);
-    text-decoration: none;
-  }
-  a:hover {
-    color: var(--red);
-    text-decoration: underline;
-    text-underline-offset: 3px;
+  @media (max-width: 760px) {
+    .raster {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
   }
 </style>

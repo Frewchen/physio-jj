@@ -23,18 +23,3 @@ export const recht = {
   stand: "November 2026",
 };
 
-export const leistungen = [
-  "Krankengymnastik auf neurophysiologischer Grundlage",
-  "Manuelle Therapie",
-  "Manuelle Lymphdrainage",
-  "Faszientherapie",
-  "Schröpftherapie",
-  "Klassische medizinische Massage",
-  "Wärme- und Kältetherapie",
-  "Kinesio-Taping",
-  "Elektrotherapie",
-  "Hausbesuche",
-  "Mentales GesundheitsCoaching",
-  "Ernährung",
-  "Ganzheitliches Gesundheitskonzept",
-];

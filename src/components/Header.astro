@@ -1,0 +1,196 @@
+---
+import { Image } from "astro:assets";
+import Icon from "./Icon.astro";
+import logo from "../assets/logo.png";
+import { praxis } from "../data/praxis";
+
+const links = [
+  { href: "/#ueber-mich", text: "Über mich" },
+  { href: "/#leistungen", text: "Leistungen" },
+  { href: "/#beschwerden", text: "Beschwerden" },
+  { href: "/#ablauf", text: "Ablauf" },
+  { href: "/#kontakt", text: "Kontakt" },
+];
+---
+
+<header class="kopfzeile" id="kopfzeile">
+  <div class="innen">
+    <a href="/" class="marke" aria-label="Zur Startseite">
+      <Image src={logo} alt="Physiotherapie Jeannette Jasinski" width={220} densities={[1, 2]} loading="eager" />
+    </a>
+
+    <nav class="nav" id="nav" aria-label="Hauptnavigation">
+      <ul>
+        {links.map((l) => <li><a href={l.href}>{l.text}</a></li>)}
+      </ul>
+      <a class="anruf" href={praxis.telefon.href}>
+        <Icon name="phone" size={16} />
+        {praxis.telefon.anzeige}
+      </a>
+    </nav>
+
+    <button class="menue-knopf" id="menue-knopf" aria-expanded="false" aria-controls="nav" aria-label="Menü öffnen">
+      <span class="auf"><Icon name="menu" /></span>
+      <span class="zu"><Icon name="x" /></span>
+    </button>
+  </div>
+</header>
+
+<script>
+  const kopf = document.getElementById("kopfzeile")!;
+  const knopf = document.getElementById("menue-knopf")!;
+  const nav = document.getElementById("nav")!;
+
+  const setzen = (offen: boolean) => {
+    kopf.classList.toggle("offen", offen);
+    knopf.setAttribute("aria-expanded", String(offen));
+    knopf.setAttribute("aria-label", offen ? "Menü schließen" : "Menü öffnen");
+  };
+  knopf.addEventListener("click", () => setzen(!kopf.classList.contains("offen")));
+  nav.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setzen(false)));
+
+  const scroll = () => kopf.classList.toggle("gescrollt", window.scrollY > 8);
+  window.addEventListener("scroll", scroll, { passive: true });
+  scroll();
+</script>
+
+<style>
+  .kopfzeile {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgb(250 246 243 / 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.25s, box-shadow 0.25s;
+  }
+  .kopfzeile.gescrollt {
+    border-bottom-color: var(--line);
+    box-shadow: 0 6px 24px -18px rgb(60 20 20 / 0.4);
+  }
+  .innen {
+    max-width: var(--breite);
+    margin: 0 auto;
+    padding: 0.7rem 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .marke img {
+    width: clamp(160px, 22vw, 210px);
+    height: auto;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+  }
+  .nav ul {
+    display: flex;
+    gap: 1.6rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .nav ul a {
+    position: relative;
+    font-size: 0.95rem;
+    color: var(--ink);
+    text-decoration: none;
+    padding: 0.3rem 0;
+  }
+  .nav ul a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 2px;
+    background: var(--red);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s;
+  }
+  .nav ul a:hover::after {
+    transform: scaleX(1);
+  }
+  .anruf {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.1rem;
+    border-radius: 999px;
+    background: var(--red);
+    color: #fff;
+    font-size: 0.92rem;
+    font-weight: 450;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+  .anruf:hover {
+    background: var(--red-dark);
+  }
+
+  .menue-knopf {
+    display: none;
+    background: none;
+    border: 0;
+    padding: 0.5rem;
+    margin-right: -0.5rem;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .menue-knopf .zu {
+    display: none;
+  }
+
+  @media (max-width: 920px) {
+    .menue-knopf {
+      display: inline-flex;
+    }
+    .nav {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 1rem;
+      padding: 0.5rem 16px 1.5rem;
+      background: var(--cream);
+      border-bottom: 1px solid var(--line);
+      box-shadow: 0 20px 30px -20px rgb(60 20 20 / 0.3);
+      display: none;
+    }
+    .offen .nav {
+      display: flex;
+    }
+    .offen .menue-knopf .auf {
+      display: none;
+    }
+    .offen .menue-knopf .zu {
+      display: inline;
+    }
+    .nav ul {
+      flex-direction: column;
+      gap: 0;
+    }
+    .nav ul a {
+      display: block;
+      padding: 0.85rem 0;
+      font-size: 1.1rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .nav ul a::after {
+      display: none;
+    }
+    .anruf {
+      justify-content: center;
+      padding: 0.9rem;
+    }
+  }
+</style>
